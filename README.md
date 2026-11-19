@@ -276,7 +276,7 @@ git checkout main
 1. See all the commits:
 
 ```
-git log
+git log --oneline
 ```
 
 2. Find the commit id we want to restore.
@@ -285,26 +285,87 @@ git log
 git checkout <commit ID>
 ```
 
-3. Edit the file and:
+3. Check the file content in the previous commit:
+
+```
+cat Hello_world.py
+```
+
+It is very important to understand that when we go back to an old commit, we are in a state called 'detached HEAD', which basically means that you are visualizing an older commit, but the main branch is still with the same modifications we made before.
+
+4. Now let's create a branch from the previous commit:
+
+```
+git switch -c back_to_the_future
+```
+
+Modify the file `Hello_world.py`
+
+```
+echo 'print("Hello from the recovered version!")' > Hello_world.py
+```
+
+Save the changes:
 
 ```
 git add -u  Hello_world.py
 git commit -m "change the past"
 ```
 
-4.  NO, we can't change the past (git commit gives error). But we can make a branch and commit
+4.  Compare the two branches
 
 ```
-git branch back_to_the_future
-git checkout  back_to_the_future
-git push origin back_to_the_future
+git switch main
 ```
+Check the file:
+
+```
+cat Hello_world.py
+```
+
+You should see the content of the latest commit made.
+
+Now switch to the recovered branch:
+
+```
+git switch back_to_the_future
+cat Hello_world.py
+```
+
+You should see the content that we just created on the new branch by restoring the previous commit.
 
 5. Make the recovered version the main
 
+Change to the main branch
+
 ```
-git checkout main
-git merge back_to_the_future
+git switch main
+```
+
+Check that you have no other uncommited changes, if you do, you won't be able to merge branches:
+
+```
+git status
+```
+
+Let's replace the content of `main` with the content of the new branch `back_to_the_future`:
+
+```
+git restore --source=back_to_the_future --staged --worktree :/
+```
+
+Check the content of the file to confirm that the changes were made:
+
+```
+cat Hello_world.py
+```
+
+You should see the content that we edited from the recovered commit.
+
+Finally, create a new commit with the changes:
+
+```
+git commit -m "Restore recovered version as main"
 ```
 
 * If you only want to restore a single file (i.e. Hello_world.py ):

@@ -312,11 +312,13 @@ git add -u  Hello_world.py
 git commit -m "change the past"
 ```
 
-4.  Compare the two branches
+5.  Compare the two branches
 
 ```
 git switch main
+git diff main..test_restore
 ```
+
 Check the file:
 
 ```
@@ -334,7 +336,7 @@ cat Hello_world.py
 
 You should see the content that we just created on the new branch by restoring the previous commit.
 
-5. Make the recovered version the main
+6. Make the recovered version the main
 
 Change to the main branch
 
@@ -354,6 +356,8 @@ Let's replace the content of `main` with the content of the new branch `back_to_
 git restore --source=back_to_the_future --staged --worktree :/
 ```
 
+The `--staged` option will prepare our modifications to be commited directly without having to adding them ourselves, `--worktree` will update the files in **our local copy of the repo**  to follow the structure that they had on the previous commit, and `:/` is telling Git to apply the changes in the whole repository file structure.
+
 Check the content of the file to confirm that the changes were made:
 
 ```
@@ -371,7 +375,7 @@ git commit -m "Restore recovered version as main"
 * If you only want to restore a single file (i.e. Hello_world.py ):
 
 ```
-git checkout <commit ID> Hello_world.py 
+git restore --source=back_to_the_future --staged --worktree -- Hello_world.py 
 ```
 
 --------------
@@ -392,7 +396,7 @@ git branch
 
 ```
 git checkout branch_1
-git ad -u Hello_world.py
+git add -u Hello_world.py
 git commit -m "SayHi function"
 git push origin branch_1
 ```
@@ -443,7 +447,7 @@ Content of the other branch
 ```
 git add -u Hello_world.py
 git commit -m "Fix merge"
-git push origin git push 
+git push origin branch_1
 
 ```
 
